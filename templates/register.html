@@ -1,0 +1,13 @@
+
+{% extends "layout.html" %}
+
+{% block body %}
+
+	<form method="post">
+		Username: <input type="text" name="username"> {%if uError%}<h3>{{uError}}</h3>{%endif%}<br>
+		Password: <input type="password" name="password">{%if pError%}<h3>{{pError}}</h3>{%endif%}<br>
+		Confirm Password: <input type="password" name="confirmpass"><br>	
+		<input type="submit" value="Submit">
+	</form>
+
+{% endblock %}

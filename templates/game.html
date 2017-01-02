@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+
+{% block head %}
+<script src="{{url_for('static', filename='js/render.js')}}"></script>
+{% endblock %}
+
+{% block body %}
+
+<div id="game">
+</div>
+
+
+<script src="{{url_for('static', filename='js/main.js')}}"></script>
+{% endblock %}

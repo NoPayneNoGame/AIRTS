@@ -1,0 +1,29 @@
+<!doctype html>
+<head>
+<title>AIRTS</title>
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename="css/style.css") }}" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.2.2/pixi.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.6/socket.io.min.js"></script>
+
+{% block head %} {% endblock %}
+
+</head>
+
+<body>
+<div class="page">
+	<h1> AIRTS </h1>
+
+	<a href="{{ url_for('index') }}">Home</a> | 
+	{% if user %}
+		<a href="{{ url_for('gamepage') }}">Game</a> | 
+		<a href="{{ url_for('logout') }}">Logout</a> |
+	{% else %}
+		<a href="{{ url_for('login') }}">Login</a> | 
+		<a href="{{ url_for('register') }}">Register</a> |
+	{% endif %}
+
+	{% block body %}
+		This should never be read.
+	{% endblock %}
+</div>
+</body>
