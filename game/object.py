@@ -12,10 +12,19 @@ class Vec2:
     def __add__(self, other):
         if isinstance(other, Vec2):
             return Vec2(self.x + other.x, self.y + other.y)
-        elif isinstance(other, (int, float)):
+        elif isinstance(other, int):
             return Vec2(self.x + other, self.y + other)
         else:
             return NotImplemented
+
+    def __radd__(self, other):
+        return self + other
+
+    def __eq__(self, other):
+        if isinstance(other, Vec2):
+            return self.x == other.x and self.y == other.y
+        else:
+            return False
 
 class Object(object):
     def __init__(self, blocking=False, name=None, team=None, texture=None, 
@@ -36,9 +45,12 @@ class Object(object):
         print "INFO: Spawning {} at {}".format(self.name, self.position)
 
     def takeDamage(self, damage):
-        if(self.health > 0):
-            self.health -= damage;
+        if self.health > 0:
+            self.health -= abs(damage);
         else:
             print self.name + " is already dead."
+
+        if self.health < 0:
+            self.health = 0
 
 
