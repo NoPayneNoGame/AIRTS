@@ -6,9 +6,20 @@ class Vec2:
     def __str__(self):
         return "({}, {})".format(self.x, self.y)
 
+    def __repr__(self):
+        return "({}, {})".format(self.x, self.y)
+
+    def __add__(self, other):
+        if isinstance(other, Vec2):
+            return Vec2(self.x + other.x, self.y + other.y)
+        elif isinstance(other, (int, float)):
+            return Vec2(self.x + other, self.y + other)
+        else:
+            return NotImplemented
+
 class Object(object):
     def __init__(self, blocking=False, name=None, team=None, texture=None, 
-            damage=0, health = 0, sightRadius=0, attackDist=0, moveDistance=0, position=Vec2(0, 0)):
+            damage=0, health = 0, sightRadius=0, range=0, moveDistance=0, position=Vec2(0, 0)):
         self.blocking = blocking
         self.name = name
         self.team = team
@@ -18,7 +29,7 @@ class Object(object):
         self.sightRadius = sightRadius
         self.moveDistance = moveDistance
         self.position = position
-        self.attackDist = attackDist
+        self.range = range
 
         self.canMove = moveDistance > 0
 
