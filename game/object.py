@@ -27,11 +27,11 @@ class Vec2:
             return False
 
 class Object(object):
-    def __init__(self, blocking=False, name=None, team=None, texture=None, 
+    def __init__(self, blocking=False, name=None, player=None, texture=None, 
             damage=0, health = 0, sightRadius=0, range=0, moveDistance=0, position=Vec2(0, 0)):
         self.blocking = blocking
         self.name = name
-        self.team = team
+        self.player = player
         self.texture = texture
         self.damage = damage
         self.health = health

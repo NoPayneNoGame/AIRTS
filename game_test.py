@@ -47,15 +47,15 @@ class BaseTest(unittest.TestCase):
     def setUp(self):
         self.base = Base(Vec2(10, 10), "red")
     
-    def test_base_team_red(self):
-        self.assertEqual(self.base.team, "red")
+    def test_base_player_red(self):
+        self.assertEqual(self.base.player, "red")
 
     def test_base_position_10_10(self):
         self.assertEqual(self.base.position, Vec2(10, 10))
 
-    def test_base_team_default_none(self):
+    def test_base_player_default_none(self):
         base = Base()
-        self.assertIsNone(base.team) 
+        self.assertIsNone(base.player) 
 
     def test_base_position_default_0_0(self):
         base = Base()
@@ -109,9 +109,9 @@ class BaseTest(unittest.TestCase):
         w = self.base.spawnUnit(0)
         self.assertEqual(w.position, self.base.waypoint)
 
-    def test_base_spawn_worker_correct_team(self):
+    def test_base_spawn_worker_correct_player(self):
         w = self.base.spawnUnit(0)
-        self.assertEqual(w.team, "red")
+        self.assertEqual(w.player, "red")
 
 class BarracksTest(unittest.TestCase):
     def setUp(self):
