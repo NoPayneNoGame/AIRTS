@@ -1,6 +1,6 @@
 from object import Vec2
 
-class Resource:
+class Resource(object):
     def __init__(self, name=None, amount=0, position=Vec2(0, 0)):
         self.amount = amount
         self.position = position

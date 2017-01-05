@@ -18,16 +18,24 @@ class Worker(Unit):
         if isinstance(resource, Resource):
             if resource.amount <= 0:
                 return
+            #I don't know how to make this nicer, bleh
+            if resource.name not in self.carrying:
+                self.carrying[resource.name] = 0
+            
             self.carrying[resource.name] += self.harvestAmount
+
             resource.amount -= self.harvestAmount
         else:
             raise TypeError(str(type(resource)) + " can not be harvested.")  
 
         if sum(self.carrying.itervalues()) >= self.totalCarry:
-            dropOffResources()
+            self.dropOffResources()
+            
 
     def dropOffResources(self):
         """Worker will return to the nearest dropoff point and deposit"""
+        if self.player == None:
+            raise ValueError(str(self) + " does not have a player")
         for k in self.carrying.keys():
             self.player.resources[k] += self.carrying[k]
         self.carrying = {}

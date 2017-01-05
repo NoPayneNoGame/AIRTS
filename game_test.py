@@ -1,8 +1,11 @@
 from game.object import Object, Vec2
 from game.unit import Unit, Worker, Solider, Scout
 from game.building import Building, Base, Barracks
+from game.player import Player
+from game.resource import Resource, GoldResource
 
 import unittest
+import uuid
 
 class Vec2Test(unittest.TestCase):
     def setUp(self):
@@ -45,10 +48,11 @@ class Vec2Test(unittest.TestCase):
 
 class BaseTest(unittest.TestCase):
     def setUp(self):
-        self.base = Base(Vec2(10, 10), "red")
+        self.player = Player()
+        self.base = Base(Vec2(10, 10), self.player)
     
-    def test_base_player_red(self):
-        self.assertEqual(self.base.player, "red")
+    def test_base_player(self):
+        self.assertIs(self.base.player, self.player)
 
     def test_base_position_10_10(self):
         self.assertEqual(self.base.position, Vec2(10, 10))
@@ -111,7 +115,8 @@ class BaseTest(unittest.TestCase):
 
     def test_base_spawn_worker_correct_player(self):
         w = self.base.spawnUnit(0)
-        self.assertEqual(w.player, "red")
+        self.assertIs(w.player, self.player)
+
 
 class BarracksTest(unittest.TestCase):
     def setUp(self):
@@ -139,6 +144,64 @@ class BarracksTest(unittest.TestCase):
         s = self.bar.spawnUnit(1)
         self.assertIsInstance(s, Scout)
 
+
+class PlayerTest(unittest.TestCase):
+    def setUp(self):
+        self.gameUUID = uuid.uuid1()
+        self.player = Player("Steven", self.gameUUID, "red")
+
+    def test_player_spawnBuilding_base(self):
+        base = self.player.spawnBuilding(0, Vec2(23, 12))
+        self.assertIsInstance(base, Base)
+
+    def test_player_spawnBuilding_id_too_high(self):
+        self.assertRaises(ValueError, self.player.spawnBuilding, 2, Vec2(23, 12))
+
+    def test_player_spawnBuilding_id_negative(self):
+        self.assertRaises(ValueError, self.player.spawnBuilding, -1, Vec2(23, 12))
+
+    def test_player_spawnBuilding_barracks_before_unlock(self):
+        self.assertRaises(ValueError, self.player.spawnBuilding, 1, Vec2(23, 12))
+
+    def test_player_unlock_barracks(self):
+        self.player.unlockBuilding(1)
+        self.assertListEqual(self.player.currentBuildings, [Base, Barracks])
+
+    def test_player_unlockBuilding_too_high(self):
+        self.assertRaises(ValueError, self.player.unlockBuilding, 2)
+
+    def test_player_unlockBuilding_negative(self):
+        self.assertRaises(ValueError, self.player.unlockBuilding, -1)
+
+
+class WorkerTest(unittest.TestCase):
+    def setUp(self):
+        self.gold = GoldResource(100, Vec2(5,5))
+        self.player = Player()
+        self.worker = Worker(player=self.player)
+
+    def test_worker_harvest_gold_once(self):
+        self.worker.harvest(self.gold)
+        self.assertEqual(self.gold.amount, 90)
+        self.assertEqual(self.worker.carrying, {"gold": 10 })
+
+    def test_worker_harvest_gold_multiple(self):
+        for _ in range(4):
+            self.worker.harvest(self.gold)
+        self.assertEqual(self.gold.amount, 60)
+        self.assertEqual(self.worker.carrying, {"gold": 40 })
+
+    def test_worker_harvest_gold_and_drop_off(self):
+        for _ in range(7):
+            self.worker.harvest(self.gold)
+        self.assertEqual(self.gold.amount, 30)
+        self.assertEqual(self.worker.carrying, {"gold": 20 })
+        self.assertEqual(self.player.resources, {"gold": 50 })
+
+    def test_worker_harvest_non_resource(self):
+        self.assertRaises(TypeError, self.worker.harvest, 20)
+        
+    
 
 if __name__ == '__main__':
     unittest.main()
