@@ -9,6 +9,10 @@ class Player:
         self.allBuildings = [Base, Barracks]
         self.currentBuildings = [Base, None]
 
+        #All buildings and units spawned by the player
+        self.buildings = []
+        self.units = []
+
     def spawnBuilding(self, id, position):
         if id >= len(self.currentBuildings) or id < 0:
             raise ValueError(str(id) + " out of possible id range.")
@@ -16,7 +20,7 @@ class Player:
             raise ValueError("No building unlocked with id: " + str(id))
     
         building = self.currentBuildings[id](position, self)
-        Building.spawnedBuildings.append(building)
+        #Building.spawnedBuildings.append(building)
         return building
 
     def unlockBuilding(self, id):

@@ -58,11 +58,12 @@ class BaseTest(unittest.TestCase):
         self.assertEqual(self.base.position, Vec2(10, 10))
 
     def test_base_player_default_none(self):
-        base = Base()
-        self.assertIsNone(base.player) 
+        #base = Base()
+        #self.assertIsNone(base.player)
+        self.assertRaises(ValueError, Base)
 
     def test_base_position_default_0_0(self):
-        base = Base()
+        base = Base(player=self.player)
         self.assertEqual(base.position, Vec2(0, 0))
 
     def test_base_spawnUnit_worker(self):
@@ -94,10 +95,8 @@ class BaseTest(unittest.TestCase):
         self.assertEqual(self.base.health, 1)
 
     def test_base_take_damage_multiple_times(self):
-        self.base.takeDamage(10)
-        self.base.takeDamage(10)
-        self.base.takeDamage(10)
-        self.base.takeDamage(10)
+        for _ in range(4):
+            self.base.takeDamage(10)
         self.assertEqual(self.base.health, 160)
 
     def test_base_take_damage_negative(self):
@@ -120,7 +119,8 @@ class BaseTest(unittest.TestCase):
 
 class BarracksTest(unittest.TestCase):
     def setUp(self):
-        self.bar = Barracks()
+        self.player = Player()
+        self.bar = Barracks(player=self.player)
 
     def test_barracks_spawn_solider(self):
         s = self.bar.spawnUnit(0)
@@ -173,12 +173,11 @@ class PlayerTest(unittest.TestCase):
     def test_player_unlockBuilding_negative(self):
         self.assertRaises(ValueError, self.player.unlockBuilding, -1)
 
-
 class WorkerTest(unittest.TestCase):
     def setUp(self):
         self.gold = GoldResource(100, Vec2(5,5))
         self.player = Player()
-        self.worker = Worker(player=self.player)
+        self.worker = Worker(Vec2(4, 4), self.player)
 
     def test_worker_harvest_gold_once(self):
         self.worker.harvest(self.gold)
@@ -191,7 +190,13 @@ class WorkerTest(unittest.TestCase):
         self.assertEqual(self.gold.amount, 60)
         self.assertEqual(self.worker.carrying, {"gold": 40 })
 
+    def test_worker_harvest_gold_and_drop_off_with_no_buildings(self):
+        for _ in range(4):
+            self.worker.harvest(self.gold)
+        self.assertRaises(ValueError, self.worker.harvest, self.gold)
+
     def test_worker_harvest_gold_and_drop_off(self):
+        base = Base(player=self.player)
         for _ in range(7):
             self.worker.harvest(self.gold)
         self.assertEqual(self.gold.amount, 30)
@@ -200,7 +205,7 @@ class WorkerTest(unittest.TestCase):
 
     def test_worker_harvest_non_resource(self):
         self.assertRaises(TypeError, self.worker.harvest, 20)
-        
+       
     
 
 if __name__ == '__main__':

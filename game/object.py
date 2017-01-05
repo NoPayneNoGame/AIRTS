@@ -25,10 +25,30 @@ class Vec2:
             return self.x == other.x and self.y == other.y
         else:
             return False
+    
+    def euclidDist(self, other):
+        if not isinstance(other, Vec2):
+            raise TypeError("euclidDist must compare two Vec2 objects, trying to compare {} and {}".format(
+                    str(type(self)), str(type(other))))
+        return abs(self.x - other.x) + abs(self.y - other.y)
+
+    def closestFromList(self, l):
+        if not isinstance(l, list):
+            raise TypeError("closestFromList requires List")
+        if len(l) == 0:
+            raise ValueError("List cannot be empty")
+        
+        d = {}
+        for i in l:
+            d[self.euclidDist(i)] = i
+        return d[min(d.keys())]
+            
 
 class Object(object):
     def __init__(self, blocking=False, name=None, player=None, texture=None, 
             damage=0, health = 0, sightRadius=0, range=0, moveDistance=0, position=Vec2(0, 0)):
+        if not player:
+            raise ValueError(str(self) + " must have a player")
         self.blocking = blocking
         self.name = name
         self.player = player

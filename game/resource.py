@@ -5,6 +5,7 @@ class Resource(object):
         self.amount = amount
         self.position = position
         self.name = name
+        self.blocking = True
 
 
 class GoldResource(Resource):

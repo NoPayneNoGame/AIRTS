@@ -2,12 +2,12 @@ from object import Object, Vec2
 from unit import Unit, Worker, Solider, Scout
 
 class Building(Object):
-    spawnedBuildings = []
     def __init__(self, blocking=False, name=None, player=None, texture=None, damage=0, health = 0, sightRadius=0, range=0, moveDistance=0, position=Vec2(0, 0)):
         super(Building, self).__init__(blocking=blocking, name=name, player=player, texture=texture, damage=damage, health=health, sightRadius=sightRadius, range=range, moveDistance=moveDistance, position=position)
         self.allUnits = []
         self.currentUnits = []
         self.waypoint = None
+        self.player.buildings.append(self)
 
     def spawnUnit(self, id):
         if id >= len(self.currentUnits) or id < 0:
@@ -21,7 +21,7 @@ class Building(Object):
             loc = self.waypoint
 
         unit = self.currentUnits[id](loc, self.player)
-        Unit.spawnedUnits.append(unit)
+        #Unit.spawnedUnits.append(unit)
         return unit
 
     def unlockUnit(self, id):
